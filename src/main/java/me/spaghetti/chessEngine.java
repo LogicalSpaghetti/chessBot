@@ -7,7 +7,6 @@ import javax.swing.*;
 public class chessEngine {
 
     JPanel[] panel = new JPanel[64];
-    //char[] piecePositions = new char[64];
 
     char[] piecePositions = {
             'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
@@ -28,17 +27,13 @@ public class chessEngine {
             } else {
                 fileName = "src/main/resources/"+((piecePositions[l])+"2.png");
             }
-            System.out.println(l);
-            System.out.println(piecePositions[l]);
-            System.out.println(fileName);
 
             ImageIcon image = new ImageIcon(fileName);
-            Image bsImage = image.getImage(); // transform it
-            Image newImg = bsImage.getScaledInstance(56, 56, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+            Image startImage = image.getImage(); // transform it
+            Image newImg = startImage.getScaledInstance(56, 56, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
             ImageIcon image2 = new ImageIcon(newImg); // transform it back
 
             JLabel label = new JLabel(image2);
-            //label.setText("Test text");
             panel[l].removeAll();
             panel[l].add(label);
         }

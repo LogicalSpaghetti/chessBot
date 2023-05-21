@@ -22,7 +22,6 @@ public class MyFrame extends JFrame {
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //exit out of the application
         this.setSize(width, height); //sets x and y dimension of this
-        this.setResizable(false);
 
     }
 

@@ -1,12 +1,16 @@
 package main.java.me.spaghetti;
 
-import java.awt.*;
-
-import javax.swing.*;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.ImageIcon;
+import java.awt.Image;
+import java.awt.Color;
+import java.awt.GridLayout;
 
 public class chessEngine {
 
     JPanel[] panel = new JPanel[64];
+    MyFrame frame = new MyFrame("logicalChess",640,640);
 
     char[] piecePositions = {
             'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
@@ -36,12 +40,12 @@ public class chessEngine {
             JLabel label = new JLabel(image2);
             panel[l].removeAll();
             panel[l].add(label);
+            frame.revalidate();
+            frame.repaint();
         }
     }
 
     chessEngine() {
-
-        MyFrame frame = new MyFrame("logicalChess",640,640);
 
         for(int h = 0; h < 64; h++) {
             panel[h] = new JPanel();
@@ -65,10 +69,9 @@ public class chessEngine {
         }
 
         refreshBoard();
-        piecePositions[63] = 'R';
-        refreshBoard();
-
         frame.setVisible(true);
+        piecePositions[63] = 'q';
+        refreshBoard();
     }
 
     public static void main(String[] args) {

@@ -8,8 +8,6 @@ import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import static java.lang.Math.floor;
-
 public class MyFrame extends JFrame implements MouseListener{
 
     MyFrame(String title, int width, int height){
@@ -42,6 +40,7 @@ public class MyFrame extends JFrame implements MouseListener{
         int y = (e.getY() - 30) / chessEngine.tileSize; // Subtract 30 to account for the frame title bar
 
         System.out.println("Button: " + e.getButton() + ", x = " + x + " y = " + y);
+        chessEngine.highlightClicked(x, y);
     }
 
     @Override

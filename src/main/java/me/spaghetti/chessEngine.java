@@ -7,10 +7,13 @@ public class chessEngine {
 
     static int tileSize = 80;
 
-    JPanel[] panel = new JPanel[64];
-    char[] panelColor = new char[64];
-    boolean[] panelIsRedHighlighted = new boolean[64];
+    static JPanel[] panel = new JPanel[64];
+    static char[] panelColor = new char[64];
+    static boolean[] panelIsRedHighlighted = new boolean[64];
+    static boolean[] panelIsHighlighted = new boolean[64];
     MyFrame frame = new MyFrame("logicalChess", (8*tileSize), (8*tileSize));
+
+    static int pieceToMove = -1;
 
 
     char[] piecePositions = {
@@ -23,6 +26,45 @@ public class chessEngine {
             'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P',
             'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'
     };
+
+    public static void highlightClicked(int panelX, int panelY) {
+
+        int panelNumber = (panelY*8)+panelX;
+        panelIsRedHighlighted[panelNumber] = false;
+
+        //sets every other yellow panel to normal
+        for(int i = 0; i < 64; i++) {
+            if(panelNumber != i && panelIsHighlighted[i]) {
+                if(panelColor[i] == 'W') {
+                    panel[i].setBackground(new Color(0x7c4c3e));
+                } else {
+                    panel[i].setBackground(new Color(0x512a2a));
+                }
+                panelIsHighlighted[i] = false;
+            }
+        }
+
+        if(!panelIsHighlighted[panelNumber]) {
+            if (panelColor[panelNumber] == 'W') {
+                panel[panelNumber].setBackground(new Color(0xbea61f));
+
+            } else {
+                panel[panelNumber].setBackground(new Color(0xa89515));
+            }
+            pieceToMove = panelNumber;
+            panelIsHighlighted[panelNumber] = true;
+        } else {
+            if(panelColor[panelNumber] == 'W') {
+                panel[panelNumber].setBackground(new Color(0x7c4c3e));
+            } else {
+                panel[panelNumber].setBackground(new Color(0x512a2a));
+            }
+            pieceToMove = -1;
+            panelIsHighlighted[panelNumber] = false;
+        }
+        System.out.println(pieceToMove);
+
+    }
 
     private void redHighlight(int panelNumber) {
 
@@ -105,6 +147,7 @@ public class chessEngine {
         for(int i = 0; i < 64; i++) {
             redHighlight(i);
             redHighlight(i);
+
         }
 
     }

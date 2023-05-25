@@ -1,16 +1,17 @@
 package main.java.me.spaghetti;
 
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.ImageIcon;
-import java.awt.Image;
-import java.awt.Color;
-import java.awt.GridLayout;
+import javax.swing.*;
+import java.awt.*;
 
 public class chessEngine {
 
+    static int tileSize = 80;
+
     JPanel[] panel = new JPanel[64];
-    MyFrame frame = new MyFrame("logicalChess",640,640);
+    char[] panelColor = new char[64];
+    boolean[] panelIsRedHighlighted = new boolean[64];
+    MyFrame frame = new MyFrame("logicalChess", (8*tileSize), (8*tileSize));
+
 
     char[] piecePositions = {
             'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
@@ -23,6 +24,28 @@ public class chessEngine {
             'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'
     };
 
+    private void redHighlight(int panelNumber) {
+
+        if(!panelIsRedHighlighted[panelNumber]) {
+            if (panelColor[panelNumber] == 'W') {
+                panel[panelNumber].setBackground(new Color(0x9d392e));
+            } else {
+                panel[panelNumber].setBackground(new Color(0x7d1f1f));
+            }
+            panelIsRedHighlighted[panelNumber] = true;
+        } else {
+            if(panelColor[panelNumber] == 'W') {
+                panel[panelNumber].setBackground(new Color(0x7c4c3e));
+            } else {
+                panel[panelNumber].setBackground(new Color(0x512a2a));
+            }
+            panelIsRedHighlighted[panelNumber] = false;
+        }
+
+
+    }
+
+
     private void refreshBoard() {
         for(int l = 0; l < 64; l++) {
             String fileName;
@@ -34,12 +57,14 @@ public class chessEngine {
 
             ImageIcon image = new ImageIcon(fileName);
             Image startImage = image.getImage(); // transform it
-            Image newImg = startImage.getScaledInstance(56, 56, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
-            ImageIcon image2 = new ImageIcon(newImg); // transform it back
+            Image newImg = startImage.getScaledInstance( (tileSize/10)*7, (tileSize/10)*7, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
+            image.setImage(newImg); // transform it back
 
-            JLabel label = new JLabel(image2);
+            panel[l].setPreferredSize(new Dimension(tileSize, tileSize));
+
             panel[l].removeAll();
-            panel[l].add(label);
+            JLabel label = new JLabel(image);
+            panel[l].add(label, BorderLayout.CENTER);
             frame.revalidate();
             frame.repaint();
         }
@@ -47,9 +72,14 @@ public class chessEngine {
 
     chessEngine() {
 
-        for(int h = 0; h < 64; h++) {
-            panel[h] = new JPanel();
+        for(int i = 0; i < 64; i++) {
+            panelIsRedHighlighted[i] = false;
+            panel[i] = new JPanel();
+            panel[i].setLayout(new BorderLayout());
         }
+
+
+
 
         boolean white = true;
 
@@ -59,8 +89,10 @@ public class chessEngine {
                 int k = (i*8)+j;
                 if(white) {
                     panel[k].setBackground(new Color(0x7c4c3e));
+                    panelColor[k] = 'W';
                 } else {
                     panel[k].setBackground(new Color(0x512a2a));
+                    panelColor[k] = 'B';
                 }
                 frame.add(panel[k]);
                 white= !white;
@@ -69,9 +101,12 @@ public class chessEngine {
         }
 
         refreshBoard();
-        frame.setVisible(true);
-        piecePositions[63] = 'q';
-        refreshBoard();
+
+        for(int i = 0; i < 64; i++) {
+            redHighlight(i);
+            redHighlight(i);
+        }
+
     }
 
     public static void main(String[] args) {

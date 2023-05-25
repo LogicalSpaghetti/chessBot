@@ -5,8 +5,12 @@ import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
-public class MyFrame extends JFrame {
+import static java.lang.Math.floor;
+
+public class MyFrame extends JFrame implements MouseListener{
 
     MyFrame(String title, int width, int height){
 
@@ -21,8 +25,42 @@ public class MyFrame extends JFrame {
         this.setTitle(title); //sets title of this
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //exit out of the application
-        this.setSize(width, height); //sets x and y dimension of this
+        this.setSize(width, height + 30); // Add 30 to account for the frame title bar, and sets x and y dimension of this
+        this.setMinimumSize(new Dimension(width, height));
+
+        this.addMouseListener(this);
+
+        this.setResizable(false);
+
+        this.setVisible(true);
 
     }
 
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        int x = (e.getX()) / chessEngine.tileSize; // Subtract 8 to account for the frame border
+        int y = (e.getY() - 30) / chessEngine.tileSize; // Subtract 30 to account for the frame title bar
+
+        System.out.println("Button: " + e.getButton() + ", x = " + x + " y = " + y);
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseEntered(MouseEvent e) {
+
+    }
+
+    @Override
+    public void mouseExited(MouseEvent e) {
+
+    }
 }

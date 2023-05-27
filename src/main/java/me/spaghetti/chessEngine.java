@@ -52,7 +52,9 @@ public class chessEngine {
         panelPieceColor[fromPos] = ' ';
 
         pieceToMove = -1;
+        System.out.println(turn);
         turn = !turn;
+        System.out.println(turn);
         highlightClicked(fromPos);
 
         refreshBoard();
@@ -61,7 +63,6 @@ public class chessEngine {
     public static void panelClicked(int panelX, int panelY) {
 
         int panelNumber = (panelY*8)+panelX;
-        //don't bother with valid move detection in here besides color checks to make sure you're not just highlighting a different piece
 
         //finds which space is highlighted, if any
         int highlightedSpace = -1;
@@ -112,7 +113,7 @@ public class chessEngine {
         if (panelPieceColor[panelNumber] != ' ') {
             if (panelPieceColor[panelNumber] == 'W' && turn) {
                 canMove = true;
-            } else if (!turn) {
+            } else if (panelPieceColor[panelNumber] == 'B' && !turn) {
                 canMove = true;
             }
         }

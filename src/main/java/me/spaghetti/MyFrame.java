@@ -1,3 +1,5 @@
+//contains the basic frame definition as well as the MouseListener
+
 package main.java.me.spaghetti;
 
 import javax.swing.JFrame;
@@ -38,9 +40,14 @@ public class MyFrame extends JFrame implements MouseListener{
     public void mouseClicked(MouseEvent e) {
         int x = (e.getX()) / chessEngine.tileSize; // Subtract 8 to account for the frame border
         int y = (e.getY() - 30) / chessEngine.tileSize; // Subtract 30 to account for the frame title bar
+        int panelNumber = (y*8)+x;
 
         System.out.println("Button: " + e.getButton() + ", x = " + x + " y = " + y);
-        chessEngine.highlightClicked(x, y);
+        if(e.getButton() == 1) {
+            chessEngine.panelClicked(x, y);
+        } else if (e.getButton() == 3) {
+            chessEngine.redHighlight(panelNumber);
+        }
     }
 
     @Override

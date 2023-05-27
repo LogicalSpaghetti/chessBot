@@ -11,12 +11,16 @@ public class chessEngine {
     static char[] panelColor = new char[64];
     static boolean[] panelIsRedHighlighted = new boolean[64];
     static boolean[] panelIsHighlighted = new boolean[64];
-    MyFrame frame = new MyFrame("logicalChess", (8*tileSize), (8*tileSize));
+    static char[] panelPieceColor = new char[64];
+    static MyFrame frame = new MyFrame("logicalChess", (8*tileSize), (8*tileSize));
+
+    //true = white
+    static boolean turn = true;
 
     static int pieceToMove = -1;
 
 
-    char[] piecePositions = {
+    static char[] piecePositions = {
             'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
             'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p',
             '0', '0', '0', '0', '0', '0', '0', '0',
@@ -27,14 +31,66 @@ public class chessEngine {
             'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'
     };
 
-    public static void highlightClicked(int panelX, int panelY) {
+    public static void movePiece(int panelNumber) {
+        //just move them in piecePositions[] and refreshBoard[]
+        //also change the values in panelPieceColor
+
+
+        turn = !turn;
+        highlightClicked(panelNumber);
+        refreshBoard();
+    }
+
+    public static void panelClicked(int panelX, int panelY) {
 
         int panelNumber = (panelY*8)+panelX;
+        //don't bother with valid move detection in here besides color checks to make sure you're not just highlighting a different piece
+
+        System.out.println("panel clicked");
+        int highlightedSpace = -1;
+        for(int i = 0; i < 64; i++) {
+            if(panelIsHighlighted[i]) {
+                highlightedSpace = i;
+            }
+        }
+        boolean canMove = false;
+        if (panelPieceColor[panelNumber] != ' ') {
+            if (panelPieceColor[panelNumber] == 'W' && turn) {
+                System.out.println("white piece");
+                canMove = true;
+            } else if (!turn) {
+                System.out.println("black piece");
+                canMove = true;
+            }
+        }
+        System.out.println("can move = " + canMove);
+
+        if(highlightedSpace > 0) {
+            movePiece(panelNumber);
+        } else {
+            highlightClicked(panelNumber);
+        }
+
+        refreshBoard();
+    }
+
+    public static void highlightClicked(int panelNumber) {
+
         panelIsRedHighlighted[panelNumber] = false;
 
-        //sets every other yellow panel to normal
+        //sets every other panel to default color
         for(int i = 0; i < 64; i++) {
+            //sets every other yellow panel to normal
             if(panelNumber != i && panelIsHighlighted[i]) {
+                if(panelColor[i] == 'W') {
+                    panel[i].setBackground(new Color(0x7c4c3e));
+                } else {
+                    panel[i].setBackground(new Color(0x512a2a));
+                }
+                panelIsHighlighted[i] = false;
+            }
+            //sets every red panel to normal
+            if(panelNumber != i && panelIsRedHighlighted[i]) {
                 if(panelColor[i] == 'W') {
                     panel[i].setBackground(new Color(0x7c4c3e));
                 } else {
@@ -44,6 +100,7 @@ public class chessEngine {
             }
         }
 
+        //highlights or un-highlights the current panel
         if(!panelIsHighlighted[panelNumber]) {
             if (panelColor[panelNumber] == 'W') {
                 panel[panelNumber].setBackground(new Color(0xbea61f));
@@ -66,7 +123,7 @@ public class chessEngine {
 
     }
 
-    private void redHighlight(int panelNumber) {
+    public static void redHighlight(int panelNumber) {
 
         if(!panelIsRedHighlighted[panelNumber]) {
             if (panelColor[panelNumber] == 'W') {
@@ -88,14 +145,20 @@ public class chessEngine {
     }
 
 
-    private void refreshBoard() {
+    private static void refreshBoard() {
         for(int l = 0; l < 64; l++) {
             String fileName;
             if(Character.isUpperCase(piecePositions[l])) {
                 fileName = "src/main/resources/"+((piecePositions[l])+".png");
-            } else {
+                panelPieceColor[l] = 'W';
+            } else if (Character.isLowerCase(piecePositions[l])) {
                 fileName = "src/main/resources/"+((piecePositions[l])+"2.png");
+                panelPieceColor[l] = 'B';
+            } else {
+                fileName = "";
+                panelPieceColor[l] = ' ';
             }
+
 
             ImageIcon image = new ImageIcon(fileName);
             Image startImage = image.getImage(); // transform it
@@ -123,9 +186,10 @@ public class chessEngine {
 
 
 
-        boolean white = true;
-
+        //creates the board of panels
         frame.setLayout(new GridLayout(8, 8));
+        //sets the starting panel colors
+        boolean white = true;
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
                 int k = (i*8)+j;
@@ -142,13 +206,7 @@ public class chessEngine {
             white= !white;
         }
 
-        refreshBoard();
-
-        for(int i = 0; i < 64; i++) {
-            redHighlight(i);
-            redHighlight(i);
-
-        }
+        refreshBoard(); //sets everything up to start
 
     }
 

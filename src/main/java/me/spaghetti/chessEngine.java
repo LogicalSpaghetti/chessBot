@@ -31,13 +31,30 @@ public class chessEngine {
             'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'
     };
 
-    public static void movePiece(int panelNumber) {
+    public static void movePiece(int panelNumber, int fromPos) {
         //just move them in piecePositions[] and refreshBoard[]
         //also change the values in panelPieceColor
 
+        if(panelNumber == fromPos) {
+            highlightClicked(panelNumber);
+            return;
+        }
 
+        //checks if the new square isn't the same color
+        if((panelPieceColor[panelNumber] == 'W' && turn) || (panelPieceColor[panelNumber] == 'B' && !turn)) {
+            highlightClicked(panelNumber);
+            return;
+        }
+
+        piecePositions[panelNumber] = piecePositions[fromPos];
+        piecePositions[fromPos] = '0';
+        panelPieceColor[panelNumber] = panelPieceColor[fromPos];
+        panelPieceColor[fromPos] = ' ';
+
+        pieceToMove = -1;
         turn = !turn;
-        highlightClicked(panelNumber);
+        highlightClicked(fromPos);
+
         refreshBoard();
     }
 
@@ -46,27 +63,17 @@ public class chessEngine {
         int panelNumber = (panelY*8)+panelX;
         //don't bother with valid move detection in here besides color checks to make sure you're not just highlighting a different piece
 
-        System.out.println("panel clicked");
+        //finds which space is highlighted, if any
         int highlightedSpace = -1;
         for(int i = 0; i < 64; i++) {
             if(panelIsHighlighted[i]) {
                 highlightedSpace = i;
             }
         }
-        boolean canMove = false;
-        if (panelPieceColor[panelNumber] != ' ') {
-            if (panelPieceColor[panelNumber] == 'W' && turn) {
-                System.out.println("white piece");
-                canMove = true;
-            } else if (!turn) {
-                System.out.println("black piece");
-                canMove = true;
-            }
-        }
-        System.out.println("can move = " + canMove);
 
+        //if there's already a highlighted space, it tries moving, else it highlights the selected space
         if(highlightedSpace > 0) {
-            movePiece(panelNumber);
+            movePiece(panelNumber, highlightedSpace);
         } else {
             highlightClicked(panelNumber);
         }
@@ -100,8 +107,17 @@ public class chessEngine {
             }
         }
 
-        //highlights or un-highlights the current panel
-        if(!panelIsHighlighted[panelNumber]) {
+        //checks if it's a piece that can move
+        boolean canMove = false;
+        if (panelPieceColor[panelNumber] != ' ') {
+            if (panelPieceColor[panelNumber] == 'W' && turn) {
+                canMove = true;
+            } else if (!turn) {
+                canMove = true;
+            }
+        }
+        //highlights or un-highlights the current panel if it can move
+        if(!panelIsHighlighted[panelNumber] && canMove) {
             if (panelColor[panelNumber] == 'W') {
                 panel[panelNumber].setBackground(new Color(0xbea61f));
 
@@ -119,7 +135,6 @@ public class chessEngine {
             pieceToMove = -1;
             panelIsHighlighted[panelNumber] = false;
         }
-        System.out.println(pieceToMove);
 
     }
 
@@ -141,7 +156,6 @@ public class chessEngine {
             panelIsRedHighlighted[panelNumber] = false;
         }
 
-
     }
 
 
@@ -159,7 +173,6 @@ public class chessEngine {
                 panelPieceColor[l] = ' ';
             }
 
-
             ImageIcon image = new ImageIcon(fileName);
             Image startImage = image.getImage(); // transform it
             Image newImg = startImage.getScaledInstance( (tileSize/10)*7, (tileSize/10)*7, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
@@ -175,42 +188,35 @@ public class chessEngine {
         }
     }
 
-    chessEngine() {
 
-        for(int i = 0; i < 64; i++) {
-            panelIsRedHighlighted[i] = false;
-            panel[i] = new JPanel();
-            panel[i].setLayout(new BorderLayout());
-        }
+        public static void main(String[] args) {
+            for(int i = 0; i < 64; i++) {
+                panelIsRedHighlighted[i] = false;
+                panel[i] = new JPanel();
+                panel[i].setLayout(new BorderLayout());
+            }
 
-
-
-
-        //creates the board of panels
-        frame.setLayout(new GridLayout(8, 8));
-        //sets the starting panel colors
-        boolean white = true;
-        for(int i = 0; i < 8; i++) {
-            for(int j = 0; j < 8; j++) {
-                int k = (i*8)+j;
-                if(white) {
-                    panel[k].setBackground(new Color(0x7c4c3e));
-                    panelColor[k] = 'W';
-                } else {
-                    panel[k].setBackground(new Color(0x512a2a));
-                    panelColor[k] = 'B';
+            //creates the board of panels
+            frame.setLayout(new GridLayout(8, 8));
+            //sets the starting panel colors
+            boolean white = true;
+            for(int i = 0; i < 8; i++) {
+                for(int j = 0; j < 8; j++) {
+                    int k = (i*8)+j;
+                    if(white) {
+                        panel[k].setBackground(new Color(0x7c4c3e));
+                        panelColor[k] = 'W';
+                    } else {
+                        panel[k].setBackground(new Color(0x512a2a));
+                        panelColor[k] = 'B';
+                    }
+                    frame.add(panel[k]);
+                    white= !white;
                 }
-                frame.add(panel[k]);
                 white= !white;
             }
-            white= !white;
-        }
 
-        refreshBoard(); //sets everything up to start
+            refreshBoard(); //sets everything up to start
 
-    }
-
-    public static void main(String[] args) {
-        new chessEngine();
     }
 }

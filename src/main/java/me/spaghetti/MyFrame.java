@@ -25,7 +25,7 @@ public class MyFrame extends JFrame implements MouseListener{
         this.setTitle(title); //sets title of this
 
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //exit out of the application
-        this.setSize(width-20, height+40); // Add 30 to account for the frame title bar, and sets x and y dimension of this
+        this.setSize(width+20-4, height+30+10-1); // Add 30 to account for the frame title bar, and sets x and y dimension of this
         //this.setMinimumSize(new Dimension(width, height));
 
         this.addMouseListener(this);
@@ -44,6 +44,9 @@ public class MyFrame extends JFrame implements MouseListener{
         int x = (e.getX()) / ChessEngine.tileSize;
         int y = (e.getY() - 30) / ChessEngine.tileSize;
         int panelNumber = (y*8)+x;
+
+        System.out.println("panelNumber = " + panelNumber);
+        System.out.println("panelNumber%8 = " + (panelNumber%8));
 
         if(e.getButton() == 1) {
             Left.PanelClicked(x, y);

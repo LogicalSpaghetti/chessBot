@@ -5,17 +5,16 @@ import java.awt.*;
 
 public class ChessEngine {
 
-    //declaring variables
+    // declaring variables
     static int tileSize = 80;
 
     static JPanel[] panel = new JPanel[64];
     static char[] panelColor = new char[64];
     static boolean[] panelIsRedHighlighted = new boolean[64];
     static boolean[] panelIsHighlighted = new boolean[64];
-    static char[] panelPieceColor = new char[64];
     static MyFrame frame = new MyFrame("logicalChess", (8*tileSize), (8*tileSize));
     static char pieceSelected;
-    //true = white
+    // true = white
     static boolean turn = true;
     static int pieceToMove = -1;
     static char[] piecePositions = {
@@ -28,19 +27,14 @@ public class ChessEngine {
             'P', 'P', 'P', 'P', 'P', 'P', 'P', 'P',
             'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'
     };
+    static char[] panelPieceColor = new char[64];
 
-    static boolean whiteKingHasMoved = false;
-    static boolean whiteQRookHasMoved = false;
-    static boolean whiteKRookHasMoved = false;
+    static boolean whiteCanLongCastle = true;
+    static boolean whiteCanShortCastle = true;
+    static boolean blackCanLongCastle = true;
+    static boolean blackCanShortCastle = true;
 
-    static boolean blackKingHasMoved = false;
-    static boolean blackQRookHasMoved = false;
-    static boolean blackKRookHasMoved = false;
-
-    static boolean[] whitePawnFirstMove = new boolean[8];
-    static boolean[] blackPawnFirstMove = new boolean[8];
-
-    //main method
+    // main method
     public static void main(String[] args) {
 
         for(int i = 0; i < 64; i++) {
@@ -49,14 +43,9 @@ public class ChessEngine {
             panel[i].setLayout(new BorderLayout());
         }
 
-        for(int i = 0; i < 8; i++) {
-            whitePawnFirstMove[i] = false;
-            blackPawnFirstMove[i] = false;
-        }
-
-        //creates the board of panels
-        frame.setLayout(new GridLayout(8, 8));
-        //sets the starting panel colors
+        // creates the board of panels
+        // frame.setLayout(new GridLayout(8, 8));
+        // sets the starting panel colors
         boolean white = true;
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
@@ -74,7 +63,7 @@ public class ChessEngine {
             white= !white;
         }
 
-        Refresh.Board(); //sets everything up to start
+        Refresh.Board();
 
     }
 }

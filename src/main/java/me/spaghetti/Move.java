@@ -272,6 +272,7 @@ public class Move {
         turn = !turn;
 
         Highlight.HighlightClicked(fromPos);
+        highlightedPanel = -1;
 
 
     }

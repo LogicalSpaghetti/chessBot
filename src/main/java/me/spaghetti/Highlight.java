@@ -9,17 +9,19 @@ public class Highlight {
 
         panelIsRedHighlighted[panelNumber] = false;
 
+        // sets previously highlighted panel to its normal color
+        if(highlightedPanel != -1) {
+            if (highlightedPanel != panelNumber) {
+                if (panelColor[highlightedPanel] == 'W') {
+                    panel[highlightedPanel].setBackground(new Color(0x7c4c3e));
+                } else {
+                    panel[highlightedPanel].setBackground(new Color(0x512a2a));
+                }
+            }
+        }
+
         //sets every other panel to default color
         for(int i = 0; i < 64; i++) {
-            //sets every other yellow panel to normal
-            if(panelNumber != i && panelIsHighlighted[i]) {
-                if(panelColor[i] == 'W') {
-                    panel[i].setBackground(new Color(0x7c4c3e));
-                } else {
-                    panel[i].setBackground(new Color(0x512a2a));
-                }
-                panelIsHighlighted[i] = false;
-            }
             //sets every red panel to normal
             if(panelNumber != i && panelIsRedHighlighted[i]) {
                 if(panelColor[i] == 'W') {
@@ -27,7 +29,6 @@ public class Highlight {
                 } else {
                     panel[i].setBackground(new Color(0x512a2a));
                 }
-                panelIsHighlighted[i] = false;
             }
         }
 
@@ -42,7 +43,7 @@ public class Highlight {
         }
 
         //highlights or un-highlights the current panel if it can move
-        if(!panelIsHighlighted[panelNumber] && canMove) {
+        if((/*!panelIsHighlighted[panelNumber] ||*/ highlightedPanel != panelNumber) && canMove) {
 
             //changes the color to select the tile
             if (panelColor[panelNumber] == 'W') {
@@ -54,7 +55,7 @@ public class Highlight {
             pieceToMove = panelNumber;
             System.out.println(pieceSelected);
             System.out.println(panelNumber);
-            panelIsHighlighted[panelNumber] = true;
+            highlightedPanel = panelNumber;
         } else {
             if(panelColor[panelNumber] == 'W') {
                 panel[panelNumber].setBackground(new Color(0x7c4c3e));
@@ -62,7 +63,7 @@ public class Highlight {
                 panel[panelNumber].setBackground(new Color(0x512a2a));
             }
             pieceToMove = -1;
-            panelIsHighlighted[panelNumber] = false;
+            highlightedPanel = -1;
         }
 
     }

@@ -11,8 +11,7 @@ public class ChessEngine {
     static JPanel[] panel = new JPanel[64];
     static char[] panelColor = new char[64];
     static boolean[] panelIsRedHighlighted = new boolean[64];
-    static boolean[] panelIsHighlighted = new boolean[64];
-    static MyFrame frame = new MyFrame("logicalChess", (8*tileSize), (8*tileSize));
+    static int highlightedPanel = -1;
     static char pieceSelected;
     // true = white
     static boolean turn = true;
@@ -34,6 +33,10 @@ public class ChessEngine {
     static boolean blackCanLongCastle = true;
     static boolean blackCanShortCastle = true;
 
+    static MyFrame frame = new MyFrame("logicalChess", (8*tileSize), (8*tileSize));
+
+    static int testInt = 0;
+
     // main method
     public static void main(String[] args) {
 
@@ -41,6 +44,7 @@ public class ChessEngine {
             panelIsRedHighlighted[i] = false;
             panel[i] = new JPanel();
             panel[i].setLayout(new BorderLayout());
+            panel[i].setFocusable(true);
         }
 
         // creates the board of panels

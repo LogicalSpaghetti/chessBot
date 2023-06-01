@@ -26,19 +26,16 @@ public class Refresh {
             Image newImg = startImage.getScaledInstance( (tileSize/10)*7, (tileSize/10)*7, java.awt.Image.SCALE_SMOOTH); // scale it the smooth way
             image.setImage(newImg); // transform it back
 
-            //panel[l].setPreferredSize(new Dimension(tileSize, tileSize));
             panel[l].setBounds((l%8)*tileSize,((l-(l%8))/8)*tileSize, tileSize, tileSize);
-            panel[63].setBounds(560, 560, tileSize, tileSize);
-            System.out.println(((l%8)*tileSize) + " " + (((l-(l%8))/8)*tileSize));
 
             panel[l].removeAll();
             JLabel label = new JLabel(image);
             panel[l].add(label, BorderLayout.CENTER);
 
+            panel[l].addMouseListener(frame);
+
             frame.revalidate();
             frame.repaint();
         }
     }
-
-
 }

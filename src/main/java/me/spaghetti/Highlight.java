@@ -5,17 +5,17 @@ import java.awt.*;
 import static main.java.me.spaghetti.ChessEngine.*;
 
 public class Highlight {
-    public static void HighlightClicked(int panelNumber) {
+    public static void HighlightClicked(int panelNumber, int x, int y) {
 
         panelIsRedHighlighted[panelNumber] = false;
 
         // sets previously highlighted panel to its normal color
-        if(highlightedPanel != -1) {
-            if (highlightedPanel != panelNumber) {
-                if (panelColor[highlightedPanel] == 'W') {
-                    panel[highlightedPanel].setBackground(new Color(0x7c4c3e));
+        if (fromPanel != -1) {
+            if (fromPanel != panelNumber) {
+                if (panelColor[fromPanel] == 'W') {
+                    panel[fromPanel].setBackground(new Color(0x7c4c3e));
                 } else {
-                    panel[highlightedPanel].setBackground(new Color(0x512a2a));
+                    panel[fromPanel].setBackground(new Color(0x512a2a));
                 }
             }
         }
@@ -23,8 +23,8 @@ public class Highlight {
         //sets every other panel to default color
         for(int i = 0; i < 64; i++) {
             //sets every red panel to normal
-            if(panelNumber != i && panelIsRedHighlighted[i]) {
-                if(panelColor[i] == 'W') {
+            if (panelNumber != i && panelIsRedHighlighted[i]) {
+                if (panelColor[i] == 'W') {
                     panel[i].setBackground(new Color(0x7c4c3e));
                 } else {
                     panel[i].setBackground(new Color(0x512a2a));
@@ -43,7 +43,7 @@ public class Highlight {
         }
 
         //highlights or un-highlights the current panel if it can move
-        if((/*!panelIsHighlighted[panelNumber] ||*/ highlightedPanel != panelNumber) && canMove) {
+        if ((/*!panelIsHighlighted[panelNumber] ||*/ fromPanel != panelNumber) && canMove) {
 
             //changes the color to select the tile
             if (panelColor[panelNumber] == 'W') {
@@ -52,25 +52,28 @@ public class Highlight {
                 panel[panelNumber].setBackground(new Color(0xa89515));
             }
             pieceSelected = piecePositions[panelNumber];
-            pieceToMove = panelNumber;
-            System.out.println(pieceSelected);
-            System.out.println(panelNumber);
-            highlightedPanel = panelNumber;
+            fromPanel = panelNumber;
+            fromPanelX = x;
+            fromPanelY = y;
+
         } else {
-            if(panelColor[panelNumber] == 'W') {
+
+            if (panelColor[panelNumber] == 'W') {
                 panel[panelNumber].setBackground(new Color(0x7c4c3e));
             } else {
                 panel[panelNumber].setBackground(new Color(0x512a2a));
             }
-            pieceToMove = -1;
-            highlightedPanel = -1;
+            fromPanel = -1;
+            fromPanelX = -1;
+            fromPanelY = -1;
+
         }
 
     }
 
     public static void RedHighlight(int panelNumber) {
 
-        if(!panelIsRedHighlighted[panelNumber]) {
+        if (!panelIsRedHighlighted[panelNumber]) {
             if (panelColor[panelNumber] == 'W') {
                 panel[panelNumber].setBackground(new Color(0x9d392e));
             } else {
@@ -78,7 +81,7 @@ public class Highlight {
             }
             panelIsRedHighlighted[panelNumber] = true;
         } else {
-            if(panelColor[panelNumber] == 'W') {
+            if (panelColor[panelNumber] == 'W') {
                 panel[panelNumber].setBackground(new Color(0x7c4c3e));
             } else {
                 panel[panelNumber].setBackground(new Color(0x512a2a));

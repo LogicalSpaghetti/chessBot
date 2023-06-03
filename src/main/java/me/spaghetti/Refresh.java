@@ -10,7 +10,7 @@ public class Refresh {
     public static void Board() {
         for(int l = 0; l < 64; l++) {
             String fileName;
-            if(Character.isUpperCase(piecePositions[l])) {
+            if (Character.isUpperCase(piecePositions[l])) {
                 fileName = "src/main/resources/"+((piecePositions[l])+".png");
                 panelPieceColor[l] = 'W';
             } else if (Character.isLowerCase(piecePositions[l])) {
@@ -31,8 +31,6 @@ public class Refresh {
             panel[l].removeAll();
             JLabel label = new JLabel(image);
             panel[l].add(label, BorderLayout.CENTER);
-
-            panel[l].addMouseListener(frame);
 
             frame.revalidate();
             frame.repaint();

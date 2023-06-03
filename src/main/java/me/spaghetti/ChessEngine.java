@@ -7,15 +7,8 @@ public class ChessEngine {
 
     // declaring variables
     static int tileSize = 80;
-
     static JPanel[] panel = new JPanel[64];
-    static char[] panelColor = new char[64];
-    static boolean[] panelIsRedHighlighted = new boolean[64];
-    static int highlightedPanel = -1;
-    static char pieceSelected;
-    // true = white
-    static boolean turn = true;
-    static int pieceToMove = -1;
+
     static char[] piecePositions = {
             'r', 'n', 'b', 'q', 'k', 'b', 'n', 'r',
             'p', 'p', 'p', 'p', 'p', 'p', 'p', 'p',
@@ -27,34 +20,41 @@ public class ChessEngine {
             'R', 'N', 'B', 'Q', 'K', 'B', 'N', 'R'
     };
     static char[] panelPieceColor = new char[64];
+    static char[] panelColor = new char[64];
+    static boolean[] panelIsRedHighlighted = new boolean[64];
 
-    static boolean whiteCanLongCastle = true;
-    static boolean whiteCanShortCastle = true;
-    static boolean blackCanLongCastle = true;
-    static boolean blackCanShortCastle = true;
+    static char pieceSelected;
+    static int fromPanel, fromPanelX, fromPanelY = -1;
+    static int toPanel, toPanelX, toPanelY = -1;
 
+    static boolean whiteCanLongCastle, whiteCanShortCastle = true;
+    static boolean blackCanLongCastle, blackCanShortCastle = true;
+
+    // true = white
+    static boolean turn = true;
+
+    // sets up the frame
     static MyFrame frame = new MyFrame("logicalChess", (8*tileSize), (8*tileSize));
 
-    static int testInt = 0;
+
 
     // main method
     public static void main(String[] args) {
 
-        for(int i = 0; i < 64; i++) {
+        for (int i = 0; i < 64; i++) {
             panelIsRedHighlighted[i] = false;
             panel[i] = new JPanel();
             panel[i].setLayout(new BorderLayout());
             panel[i].setFocusable(true);
+            panel[i].addMouseListener(frame);
         }
 
-        // creates the board of panels
-        // frame.setLayout(new GridLayout(8, 8));
         // sets the starting panel colors
         boolean white = true;
-        for(int i = 0; i < 8; i++) {
-            for(int j = 0; j < 8; j++) {
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
                 int k = (i*8)+j;
-                if(white) {
+                if (white) {
                     panel[k].setBackground(new Color(0x7c4c3e));
                     panelColor[k] = 'W';
                 } else {

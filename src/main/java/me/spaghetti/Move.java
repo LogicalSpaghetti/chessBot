@@ -7,216 +7,373 @@ import static main.java.me.spaghetti.ChessEngine.*;
 
 public class Move {
 
-    public static void King(int fromPos, int toPos) {
+    public static void King() {
 
         //castling
-        if(turn) { //handles case for white
-            if(whiteCanShortCastle && toPos == 62) {
-                if(piecePositions[61] == '0' && piecePositions[62] == '0') {
-                    CommitToMove(fromPos, toPos);
+        if (turn) { //handles case for white
+            if (whiteCanShortCastle && toPanel == 62) {
+                if (piecePositions[61] == '0' && piecePositions[62] == '0') {
+                    CommitToMove(fromPanel, toPanel);
                     CommitToMove(63, 61); //moves the rook
                     turn = !turn;
+                    return;
                 }
-            } else if(whiteCanLongCastle && toPos == 58) {
-                if(piecePositions[57] == '0' && piecePositions[58] == '0' && piecePositions[59] == '0') {
-                    CommitToMove(fromPos, toPos);
+            } else if (whiteCanLongCastle && toPanel == 58) {
+                if (piecePositions[57] == '0' && piecePositions[58] == '0' && piecePositions[59] == '0') {
+                    CommitToMove(fromPanel, toPanel);
                     CommitToMove(56, 59); //moves the rook
                     turn = !turn;
+                    return;
                 }
             }
         } else { //handles case for black
-            if(blackCanShortCastle && toPos == 6) {
-                if(piecePositions[5] == '0' && piecePositions[6] == '0') {
-                    CommitToMove(fromPos, toPos);
+            if (blackCanShortCastle && toPanel == 6) {
+                if (piecePositions[5] == '0' && piecePositions[6] == '0') {
+                    CommitToMove(fromPanel, toPanel);
                     CommitToMove(7, 5); //moves the rook
                     turn = !turn;
+                    return;
                 }
-            } else if(blackCanLongCastle && toPos == 2) {
-                if(piecePositions[1] == '0' && piecePositions[2] == '0' && piecePositions[3] == '0') {
-                    CommitToMove(fromPos, toPos);
+            } else if (blackCanLongCastle && toPanel == 2) {
+                if (piecePositions[1] == '0' && piecePositions[2] == '0' && piecePositions[3] == '0') {
+                    CommitToMove(fromPanel, toPanel);
                     CommitToMove(0, 3); //moves the rook
                     turn = !turn;
+                    return;
                 }
             }
 
         }
 
-        if(abs(toPos%8) > (fromPos + 1)) { //what does this do?
+        //returns if the clicked position is more than one space away
+        if (abs(toPanelX-fromPanelX) > 1) {
             return;
-        }
-        if(fromPos%8 == 0 && toPos%8 == 7) { //far left
-            return;
-        }
-        if(fromPos%8 == 7  && toPos%8 == 0) { //far right
+        } else if (abs(toPanelY-fromPanelY) > 1) {
             return;
         }
 
         //these work for now, but once all the other movement is done, run a check to ensure the square isn't defended
-        if(toPos > (fromPos - 10) && toPos < (fromPos - 6)) { //handles all cases of moving up
-            CommitToMove(fromPos, toPos);
+        if (toPanel > (fromPanel - 10) && toPanel < (fromPanel - 6)) { //handles all cases of moving up
+            CommitToMove(fromPanel, toPanel);
         }
 
-        if(toPos > (fromPos - 2) && toPos < (fromPos + 2)) { //handles all cases of moving sideways
-            CommitToMove(fromPos, toPos);
+        if (toPanel > (fromPanel - 2) && toPanel < (fromPanel + 2)) { //handles all cases of moving sideways
+            CommitToMove(fromPanel, toPanel);
         }
 
-        if(toPos > (fromPos + 6) && toPos < (fromPos + 10)) { //handles all cases of moving down
-            CommitToMove(fromPos, toPos);
+        if (toPanel > (fromPanel + 6) && toPanel < (fromPanel + 10)) { //handles all cases of moving down
+            CommitToMove(fromPanel, toPanel);
         }
 
     }
 
-    public static void Knight(int fromPos, int toPos) {
+    public static void Queen() {
+        System.out.println("Queen");
 
+        if (fromPanelX == toPanelX) { // same column
+            System.out.println("Same column");
+            int direction;
+            if (toPanelY > fromPanelY) { //below
+                System.out.println("below");
+                direction = 8;
+            } else { //above
+                System.out.println("above");
+                direction = -8;
+            }
 
-        int dif = (fromPos%8) - (toPos%8);
-        dif = abs(dif);
-        if(dif > 2) {
+            // runs along checking for obstruction
+            for (int i = 1; i < abs(fromPanelY-toPanelY) + 1; i++) {
+                int tileToCheck = fromPanel + (direction * i);
+                //is tile obstructed by ally?
+                if (panelPieceColor[tileToCheck] != ' ') {
+                    // if tile is an ally
+                    if (panelPieceColor[fromPanel] == panelPieceColor[tileToCheck]) {
+                        System.out.println("ally blocking");
+                        return;
+                    }
+
+                    //if tile isn't the destination, and has an enemy
+                    if (tileToCheck != toPanel && panelPieceColor[tileToCheck] != panelPieceColor[fromPanel]) {
+                        System.out.println("enemy blocking");
+                        return;
+                    }
+                }
+
+            }
+            System.out.println("Commit to move");
+            CommitToMove(fromPanel, toPanel);
+
+        } else if (fromPanelY == toPanelY) { //same row ---------------------------------------------
+            System.out.println("Same row");
+            int direction;
+            if (toPanelX > fromPanelX) { //below
+                System.out.println("right");
+                direction = 1;
+            } else { //above
+                System.out.println("left");
+                direction = -1;
+            }
+
+            // runs along checking for obstruction
+            for (int i = 1; i < abs(fromPanelX-toPanelX) + 1; i++) {
+                int tileToCheck = fromPanel + (direction * i);
+                //is tile obstructed by ally?
+                if (panelPieceColor[tileToCheck] != ' ') {
+                    // if tile is an ally
+                    if (panelPieceColor[fromPanel] == panelPieceColor[tileToCheck]) {
+                        System.out.println("ally blocking");
+                        return;
+                    }
+
+                    //if tile isn't the destination, and has an enemy
+                    if (tileToCheck != toPanel && panelPieceColor[tileToCheck] != panelPieceColor[fromPanel]) {
+                        System.out.println("enemy blocking");
+                        return;
+                    }
+                }
+
+            }
+
+            System.out.println("Commit to move");
+            CommitToMove(fromPanel, toPanel);
+        } else if (toPanelX-toPanelY == fromPanelX-fromPanelY) { // connecting line is negative
+
+            System.out.println("connecting line is y=-x+b");
+            int direction;
+            if (toPanelX > fromPanelX) { //below
+                System.out.println("down + right");
+                direction = 9;
+            } else { //above
+                System.out.println("up + left");
+                direction = -9;
+            }
+
+            for (int i = 1; i < abs(fromPanelX-toPanelX) + 1; i++) {
+                int tileToCheck = fromPanel+(direction*i);
+                //is tile obstructed by ally?
+                if (panelPieceColor[tileToCheck] != ' ') {
+                    // if tile is an ally
+                    if (panelPieceColor[fromPanel] == panelPieceColor[tileToCheck]) {
+                        System.out.println("ally blocking");
+                        return;
+                    }
+
+                    //if tile isn't the destination, and has an enemy
+                    if (tileToCheck != toPanel && panelPieceColor[tileToCheck] != panelPieceColor[fromPanel]) {
+                        System.out.println("enemy blocking");
+                        return;
+                    }
+                }
+            }
+
+            System.out.println("Commit to move");
+            CommitToMove(fromPanel, toPanel);
+
+        } else if (7 - toPanelX - toPanelY ==  7 - fromPanelX - fromPanelY) { // connecting line is positive
+
+            System.out.println("connecting line is y=x+b");
+            int direction;
+            if (toPanelX > fromPanelX) { //below
+                System.out.println("up + right");
+                direction = -7;
+            } else { //above
+                System.out.println("down + left");
+                direction = 7;
+            }
+
+            for (int i = 1; i < abs(fromPanelX-toPanelX) + 1; i++) {
+                int tileToCheck = fromPanel+(direction*i);
+                //is tile obstructed by ally?
+                if (panelPieceColor[tileToCheck] != ' ') {
+                    // if tile is an ally
+                    if (panelPieceColor[fromPanel] == panelPieceColor[tileToCheck]) {
+                        System.out.println("ally blocking");
+                        return;
+                    }
+
+                    //if tile isn't the destination, and has an enemy
+                    if (tileToCheck != toPanel && panelPieceColor[tileToCheck] != panelPieceColor[fromPanel]) {
+                        System.out.println("enemy blocking");
+                        return;
+                    }
+                }
+            }
+
+            System.out.println("Commit to move");
+            CommitToMove(fromPanel, toPanel);
+        }
+
+    }
+
+    public static void Rook() {
+        //4 checks for move validity which stop at the edge of the board, on an enemy, or the square before an ally
+
+        //find direction of movement
+        int direction; // -1 = left, 1 = right, -8 = up, 8 = down
+        int distance;
+        if (toPanel%8 == fromPanel %8) { // true for up or down only
+            if (toPanel > fromPanel) { // true for down only
+                direction = 8;
+            } else {
+                direction = -8;
+            }
+            distance = abs((toPanel- fromPanel)/8);
+        } else if ((fromPanel - (fromPanel %8)) == (toPanel - (toPanel%8))) { // true for left or right only
+            if (toPanel < fromPanel) { // true for left only
+                direction = -1;
+            } else {
+                direction = 1;
+            }
+            distance = abs(toPanel- fromPanel);
+        } else {
             return;
         }
 
-        int absDif = abs(toPos - fromPos);
-        if(absDif == 17 || absDif == 15 || absDif == 10 || absDif == 6) {
-            CommitToMove(fromPos, toPos);
+        for(int i = 1; i < (distance+1); i++) {
+            int tileToCheck = fromPanel + (direction*i);
+            //is tile obstructed by ally?
+            if (panelPieceColor[tileToCheck] != ' ') {
+                // if tile is an ally
+                if (panelPieceColor[fromPanel] == panelPieceColor[tileToCheck]) {
+                    return;
+                }
+
+                //if tile isn't the destination, and has an enemy
+                if (tileToCheck != toPanel && panelPieceColor[tileToCheck] != panelPieceColor[fromPanel]) {
+                    return;
+                }
+            }
+        }
+
+        CommitToMove(fromPanel, toPanel);
+
+        // run a check in the right direction
+
+    }
+
+    public static void Bishop() {
+        //4 checks for move validity which stop at the edge of the board, on an enemy, or the square before an ally
+
+    }
+
+    public static void Knight() {
+
+
+        int dif = (fromPanel%8) - (toPanel%8);
+        dif = abs(dif);
+        if (dif > 2) {
+            return;
+        }
+
+        int absDif = abs(toPanel - fromPanel);
+        if (absDif == 17 || absDif == 15 || absDif == 10 || absDif == 6) {
+            CommitToMove(fromPanel, toPanel);
         }
 
     }
 
-    public static void Pawn(int fromPos, int toPos) {
+    public static void Pawn() {
 
         int sign;
-        if(pieceSelected == 'P') {
+        if (pieceSelected == 'P') {
             sign = -1;
         } else {
             sign = 1;
         }
 
-        if(toPos == fromPos+(sign*16)) { //double move
-            if((fromPos > 7 && fromPos < 16) || (fromPos > 47 && fromPos < 56)) {
-                if (piecePositions[toPos] == '0' && piecePositions[fromPos + (sign * 8)] == '0') {
-                    CommitToMove(fromPos, toPos);
-                    piecePositions[fromPos + (sign * 8)] = '&'; //en passant
+        if (toPanel == fromPanel +(sign*16)) { //double move
+            if ((fromPanel > 7 && fromPanel < 16) || (fromPanel > 47 && fromPanel < 56)) {
+                if (piecePositions[toPanel] == '0' && piecePositions[fromPanel + (sign * 8)] == '0') {
+                    piecePositions[fromPanel + (sign * 8)] = '&'; //en passant
+                    CommitToMove(fromPanel, toPanel);
                 }
             }
-        } else if(toPos == fromPos+(sign*8)) { //single move
-            if(piecePositions[toPos] == '0') {
-                CommitToMove(fromPos, toPos);
+        } else if (toPanel == fromPanel +(sign*8)) { //single move
+            if (piecePositions[toPanel] == '0') {
+                CommitToMove(fromPanel, toPanel);
             }
-        } else if (toPos == fromPos+(sign*9) || toPos == fromPos+(sign*7)) { //attack left
-            if(sign == -1) {
-                if (Character.isLowerCase(piecePositions[toPos])) {
-                    CommitToMove(fromPos, toPos);
-                } else if(piecePositions[toPos] == '&') { //en passant
-                    CommitToMove(fromPos, toPos);
-                    piecePositions[toPos + 8] = '0';
-                    panelPieceColor[toPos + 8] = '0';
+        } else if (toPanel == fromPanel +(sign*9) || toPanel == fromPanel +(sign*7)) { //attack left
+            if (sign == -1) {
+                if (Character.isLowerCase(piecePositions[toPanel])) {
+                    CommitToMove(fromPanel, toPanel);
+                } else if (piecePositions[toPanel] == '&') { //en passant
+                    CommitToMove(fromPanel, toPanel);
+                    piecePositions[toPanel + 8] = '0';
+                    panelPieceColor[toPanel + 8] = '0';
                 }
             } else {
-                if (Character.isUpperCase(piecePositions[toPos])) {
-                    CommitToMove(fromPos, toPos);
-                } else if(piecePositions[toPos] == '&') { //en passant
-                    CommitToMove(fromPos, toPos);
-                    System.out.println("(toPos + (sign * -8))" + (toPos + (sign * -8)));
-                    piecePositions[toPos - 8] = '0';
-                    panelPieceColor[toPos - 8] = '0';
+                if (Character.isUpperCase(piecePositions[toPanel])) {
+                    CommitToMove(fromPanel, toPanel);
+                } else if (piecePositions[toPanel] == '&') { //en passant
+                    CommitToMove(fromPanel, toPanel);
+                    piecePositions[toPanel - 8] = '0';
+                    panelPieceColor[toPanel - 8] = '0';
 
                 }
             }
         }
 
         //promotion
-        if(toPos > 55 || toPos < 8) {
-            Promote(toPos);
+        if (toPanel > 55 || toPanel < 8) {
+            Promote();
         }
     }
 
-    public static void Promote(int toPos) {
+    public static void Promote() {
 
         //currently only promotes to a Queen
         //the turn was swapped by CommitToMove, so this code looks backwards, but it isn't
-        if(turn) {
-            piecePositions[toPos] = 'q';
+        if (turn) {
+            piecePositions[toPanel] = 'q';
         } else {
-            piecePositions[toPos] = 'Q';
+            piecePositions[toPanel] = 'Q';
         }
     }
 
-    public static void Queen(int fromPos, int toPos) {
-        //8 checks for move validity which stop at the edge of the board, on an enemy, or the square before an ally
+    public static void MovePiece(int toPanel, int x, int y) {
 
-    }
-
-    public static void Bishop(int fromPos, int toPos) {
-        //4 checks for move validity which stop at the edge of the board, on an enemy, or the square before an ally
-
-    }
-
-    public static void Rook(int fromPos, int toPos) {
-        //4 checks for move validity which stop at the edge of the board, on an enemy, or the square before an ally
-
-        //find direction of movement
-        int direction; // -1 = left, 1 = right, -8 = up, 8 = down
-        int distance;
-        System.out.println("fromPos: " + fromPos + " toPos: " + toPos);
-        if(toPos%8 == fromPos%8) { // true for up or down only
-            if (toPos > fromPos) { // true for down only
-                direction = 8;
-            } else {
-                direction = -8;
-            }
-            distance = abs((toPos-fromPos)/8);
-        } else if ((fromPos - (fromPos%8)) == (toPos - (toPos%8))) { // true for left or right only
-            if(toPos < fromPos) { // true for left only
-                direction = -1;
-            } else {
-                direction = 1;
-            }
-            distance = abs(toPos-fromPos);
-        } else {
+        //just toggles the highlight if it's the same input
+        if (toPanel == fromPanel) {
+            Highlight.HighlightClicked(toPanel, x, y);
             return;
         }
+        //checks if the new square isn't an ally
+        if ((panelPieceColor[toPanel] == 'W' && turn) || (panelPieceColor[toPanel] == 'B' && !turn)) {
+            // todo if the king of the same color is already selected and the new selection is a rook,
+            //  then try castling. If that fails then select the rook
+            if (Character.toUpperCase(piecePositions[pieceSelected]) == 'K' && Character.toUpperCase(piecePositions[toPanel]) == 'R') {
+                if (turn && piecePositions[toPanel] == 'R') { // white
+                    if (toPanel == 56  && whiteCanLongCastle) { // long castling
 
-        for(int i = 1; i < (distance+1); i++) {
-            //is tile obstructed by ally?
-            if(panelPieceColor[fromPos] == panelPieceColor[fromPos + (direction*i)]) {
+                    } else if (toPanel == 63 && whiteCanShortCastle) { // short castling
 
+                    }
+                } else if (!turn && piecePositions[toPanel] == 'r') { // black
+                    if (toPanel == 0  && blackCanLongCastle) { // long castling
+
+                    } else if (toPanel == 7 && blackCanShortCastle) { // short castling
+
+                    }
+                }
             } else {
-
+                Highlight.HighlightClicked(toPanel, x, y);
+                return;
             }
-            //is tile the destination
-
         }
 
-        // run a check in the right direction
-
-    }
-
-    public static void MovePiece(int fromPos, int toPos) {
-        //just move them in piecePositions[] and refreshBoard[]
-        //also change the values in panelPieceColor
-
-        if(toPos == fromPos) {
-            Highlight.HighlightClicked(toPos);
-            return;
-        }
-
-        //checks if the new square isn't the same color
-        if((panelPieceColor[toPos] == 'W' && turn) || (panelPieceColor[toPos] == 'B' && !turn)) {
-            Highlight.HighlightClicked(toPos);
-            return;
-        }
-
-
-        if(pieceSelected == 'K' || pieceSelected == 'k') {
-            King(fromPos, toPos);
-        } else if(pieceSelected == 'N' || pieceSelected == 'n') {
-            Knight(fromPos, toPos);
-        } else if (pieceSelected == 'P' || pieceSelected == 'p') {
-            Pawn(fromPos, toPos);
-        } else if (pieceSelected == 'R' || pieceSelected == 'r') {
-            Rook(fromPos, toPos);
+        char pieceTypeSelected = Character.toUpperCase(pieceSelected);
+        if (pieceTypeSelected == 'K') {
+            King();
+        } else if (pieceTypeSelected == 'N') {
+            Knight();
+        } else if (pieceTypeSelected == 'P') {
+            Pawn();
+        } else if (pieceTypeSelected == 'R') {
+            Rook();
+        } else if (pieceTypeSelected == 'Q') {
+            Queen();
         } else {
-            CommitToMove(fromPos, toPos);
+            CommitToMove(fromPanel, toPanel);
         }
 
         Refresh.Board();
@@ -264,15 +421,17 @@ public class Move {
 
         //en passant
         int index = IntStream.range(0, 64).filter(i -> piecePositions[i] == '&').findFirst().orElse(-1);
-        if(index != -1) {
+        if (index != -1) {
             piecePositions[index] = '0';
         }
 
-        pieceToMove = -1;
+        toPos = -1;
+        toPanelX = -1;
+        toPanelY = -1;
+
         turn = !turn;
 
-        Highlight.HighlightClicked(fromPos);
-        highlightedPanel = -1;
+        Highlight.HighlightClicked(fromPos, fromPanelX, fromPanelY);
 
 
     }

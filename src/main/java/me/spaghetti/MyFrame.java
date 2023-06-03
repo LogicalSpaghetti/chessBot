@@ -7,7 +7,7 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
-import static main.java.me.spaghetti.ChessEngine.testInt;
+import static main.java.me.spaghetti.ChessEngine.*;
 
 public class MyFrame extends JFrame implements MouseListener{
 
@@ -27,7 +27,7 @@ public class MyFrame extends JFrame implements MouseListener{
         this.setSize(width+20-4, height+30+10-1); // Add 30 to account for the frame title bar, and sets x and y dimension of this
         this.setMinimumSize(this.getSize());
 
-        //this.addMouseListener(this);
+        this.setFocusable(false);
 
         this.setLayout(null);
 
@@ -40,31 +40,34 @@ public class MyFrame extends JFrame implements MouseListener{
     @Override
     public void mouseClicked(MouseEvent e) {
 
-        testInt += 1;
-        System.out.println("------------ start of click action " + testInt + "------------");
+    }
+
+    @Override
+    public void mousePressed(MouseEvent e) {
+
+        System.out.println("------------ start of click action " + "------------");
+        System.out.println("From: " + fromPanel + " " + fromPanelX + " " + fromPanelY + " To: " + toPanel + " " + toPanelX + " " + toPanelY);
 
         int x = e.getComponent().getX()/80;
         int y = e.getComponent().getY()/80;
         int panelNumber = (y*8)+x;
         System.out.println("panelNumber = " + panelNumber);
 
-        if(e.getButton() == 1) {
+        if (e.getButton() == 1) {
             System.out.println("left");
-            Left.PanelClicked(panelNumber);
+            Left.PanelClicked(panelNumber, x, y);
         } else if (e.getButton() == 3) {
             System.out.println("right");
             Highlight.RedHighlight(panelNumber);
         }
 
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
+        System.out.println("From: " + fromPanel + " " + fromPanelX + " " + fromPanelY + " To: " + toPanel + " " + toPanelX + " " + toPanelY);
 
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
+
     }
 
     @Override
